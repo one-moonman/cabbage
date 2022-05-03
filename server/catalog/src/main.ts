@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { TransformInterceptor } from 'src/interceptors/Transform.interceptor';
+import { TransformInterceptor } from 'src/utils/interceptors/Transform.interceptor';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
