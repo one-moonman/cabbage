@@ -11,6 +11,7 @@ export class NotFoundInterceptor implements NestInterceptor {
             .handle()
             .pipe(tap(data => {
                 if (data === undefined || data === null) { throw new NotFoundException(this.errorMessage); }
+
             }));
     }
 }

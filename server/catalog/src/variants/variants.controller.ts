@@ -3,7 +3,7 @@ import { VariantsService } from './variants.service';
 import { CreateVariantDto } from './dto/create-variant.dto';
 import { UpdateVariantDto } from './dto/update-variant.dto';
 import { ProductsService } from 'src/products/products.service';
-import { NotFoundInterceptor } from 'src/utils/interceptors/NotFound.interceptor';
+import { NotFoundInterceptor } from 'src/interceptors/NotFound.interceptor';
 
 @Controller('variants')
 export class VariantsController {

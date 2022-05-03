@@ -25,6 +25,7 @@ export class Variant {
     @Prop({ required: true })
     availability: number;
 
+    // if working with relational database it is better to store the category_id
     // @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
     // category: Category;
 

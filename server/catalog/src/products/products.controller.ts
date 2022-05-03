@@ -3,7 +3,7 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CategoriesService } from 'src/categories/categories.service';
-import { NotFoundInterceptor } from 'src/utils/interceptors/NotFound.interceptor';
+import { NotFoundInterceptor } from 'src/interceptors/NotFound.interceptor';
 
 @Controller('products')
 export class ProductsController {

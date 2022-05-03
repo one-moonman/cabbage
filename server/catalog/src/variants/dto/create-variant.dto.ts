@@ -3,6 +3,6 @@ export class CreateVariantDto {
     slug: string;
     price: number;
     stock: number;
-    // category: string;
+    //category: string;
     product: string;
 }
