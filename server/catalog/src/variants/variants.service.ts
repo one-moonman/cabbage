@@ -20,16 +20,13 @@ export class VariantsService {
     return this.variantModel.find().exec();
   }
 
-  async findById(id: string) {
-    return this.variantModel.findById(id).exec();
+  async findOne(id: string, taken: number) {
+    const doc = await this.variantModel.findById(id).exec();
+    return this.variantModel.findByIdAndUpdate(id, { availability: doc.availability - taken })
   }
 
-  async findBySlug(slug: string) {
-    return this.variantModel.findOne({ slug }).exec();
-  }
-
-  async update(id: string, updateProductDto: UpdateVariantDto) {
-    return this.variantModel.findByIdAndUpdate(id, updateProductDto);
+  async update(id: string, updateVariantDto: UpdateVariantDto) {
+    return this.variantModel.findByIdAndUpdate(id, updateVariantDto);
   }
 
   async remove(id: string) {

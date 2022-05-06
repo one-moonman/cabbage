@@ -1,10 +1,12 @@
-import { NotFoundException, Param } from '@nestjs/common';
+import { NotFoundException, Param, Query } from '@nestjs/common';
 import { Controller, Get, Req } from '@nestjs/common';
+import { ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from 'src/categories/categories.service';
-import { CategoryDocument } from 'src/categories/entities/category.entity';
+import { Category, CategoryDocument } from 'src/categories/entities/category.entity';
 import { Product, ProductDocument } from 'src/products/entities/product.entity';
-import { Variant } from 'src/variants/entities/variant.entity';
+import { Variant, VariantDocument } from 'src/variants/entities/variant.entity';
 
+@ApiTags('query')
 @Controller('query')
 export class QueryController {
     constructor(private readonly categoriesService: CategoriesService) { }
@@ -21,19 +23,22 @@ export class QueryController {
         return product;
     }
 
-
     private returnVariant(variants: Variant[], variantSlug: string) {
-        const variant = variants.find((v: Variant) => v.slug === variantSlug);
+        const variant = variants.find((v: Variant) => v.slug === variantSlug) as VariantDocument;
         if (!variant) throw new NotFoundException(`Variant with slug:${variantSlug} Not Found`);
         return variant;
     }
 
     @Get('/:categorySlug')
+    @ApiOkResponse({ type: Category })
+    @ApiNotFoundResponse()
     async getCategory(@Param('categorySlug') categorySlug: string) {
         return this.returnCategory(categorySlug);
     }
 
     @Get('/:categorySlug/:productSlug')
+    @ApiOkResponse({ type: Product })
+    @ApiNotFoundResponse()
     async getProduct(
         @Param('categorySlug') categorySlug: string,
         @Param('productSlug') productSlug: string
@@ -44,15 +49,20 @@ export class QueryController {
     }
 
     @Get('/:categorySlug/:productSlug/:variantSlug')
+    @ApiOkResponse({ type: Variant })
+    @ApiNotFoundResponse()
     async getVariant(
         @Param('categorySlug') categorySlug: string,
         @Param('productSlug') productSlug: string,
-        @Param('variantSlug') variantSlug: string
+        @Param('variantSlug') variantSlug: string,
+        @Query('taken') taken: number = 0
     ) {
         const category = await this.returnCategory(categorySlug);
         await category.populate('products');
         const product = this.returnProduct(category.products, productSlug);
         await product.populate('variants');
-        return this.returnVariant(product.variants, variantSlug);
+        const varinat = this.returnVariant(product.variants, variantSlug);
+        varinat.availability -= taken;
+        return varinat.save();
     }
 }

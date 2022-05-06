@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category, CategoryModel } from './entities/category.entity';
+import { Connection } from 'mongoose';
 
 @Injectable()
 export class CategoriesService {
-
-  constructor(@InjectModel(Category.name) private readonly categoryModel: CategoryModel) { }
+  constructor(
+    @InjectConnection() private readonly connection: Connection,
+    @InjectModel(Category.name) private readonly categoryModel: CategoryModel) {
+  }
 
   async create(createCategoryDto: CreateCategoryDto) {
     return this.categoryModel.create(createCategoryDto);
@@ -30,6 +33,10 @@ export class CategoriesService {
   }
 
   async remove(id: string) {
+    await Promise.all([
+      this.connection.collection('products').deleteMany({ category: id }),
+      this.connection.collection('variants').deleteMany({ category: id })
+    ])
     return this.categoryModel.findByIdAndRemove(id);
   }
 }

@@ -10,8 +10,7 @@ export class NotFoundInterceptor implements NestInterceptor {
         return stream$
             .handle()
             .pipe(tap(data => {
-                if (data === undefined || data === null) { throw new NotFoundException(this.errorMessage); }
-
+                if (data === undefined || data === null) { throw new NotFoundException(this.errorMessage) }
             }));
     }
 }

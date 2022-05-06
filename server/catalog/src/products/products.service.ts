@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductModel } from './entities/product.entity';
+import { Connection } from 'mongoose';
 
 @Injectable()
 export class ProductsService {
   constructor(
+    @InjectConnection() private readonly connection: Connection,
     @InjectModel(Product.name) private readonly productModel: ProductModel
   ) { }
 
@@ -22,15 +24,12 @@ export class ProductsService {
     return this.productModel.findById(id).exec();
   }
 
-  async findBySlug(slug: string) {
-    return this.productModel.findOne({ slug }).exec();
-  }
-
   async update(id: string, updateProductDto: UpdateProductDto) {
     return this.productModel.findByIdAndUpdate(id, updateProductDto);
   }
 
   async remove(id: string) {
+    await this.connection.collection('variants').deleteMany({ product: id });
     return this.productModel.findByIdAndRemove(id);
   }
 }

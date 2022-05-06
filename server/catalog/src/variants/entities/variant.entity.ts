@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types, Model } from 'mongoose';
 import { Category } from 'src/categories/entities/category.entity';
 import { Product } from 'src/products/entities/product.entity';
@@ -7,30 +8,37 @@ export type VariantDocument = Variant & Document;
 
 @Schema()
 export class Variant {
+    @ApiProperty()
     @Prop({ required: true })
     name: string;
 
+    @ApiProperty()
     @Prop({ required: true })
     slug: string;
 
+    @ApiProperty()
     @Prop({ required: true })
     price: number;
 
+    @ApiProperty()
     @Prop({ required: true })
     stock: number;
 
+    @ApiProperty()
     @Prop({ required: true })
     commited: number;
 
+    @ApiProperty()
     @Prop({ required: true })
     availability: number;
 
-    // if working with relational database it is better to store the category_id
-    // @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
-    // category: Category;
-
+    @ApiProperty({ type: String, description: 'id for many-to-one ref' })
     @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
     product: Product;
+
+    @ApiProperty({ type: String, description: 'id for many-to-one ref' })
+    @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
+    category: Category;
 }
 
 export const VariantSchema = SchemaFactory.createForClass(Variant);
