@@ -41,7 +41,7 @@ export class VariantsController {
 
   @Get(':id')
   @VariantResponse()
-  async findOne(@Param('id') id: string, @Query('taken') taken: number = 0) {
+  async findOne(@Param('id') id: string, @Query('taken') taken: number) {
     return this.variantsService.findOne(id, taken);
   }
 

@@ -55,7 +55,7 @@ export class QueryController {
         @Param('categorySlug') categorySlug: string,
         @Param('productSlug') productSlug: string,
         @Param('variantSlug') variantSlug: string,
-        @Query('taken') taken: number = 0
+        @Query('taken') taken: number
     ) {
         const category = await this.returnCategory(categorySlug);
         await category.populate('products');

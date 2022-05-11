@@ -17,4 +17,13 @@ describe('CategoriesController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('findAll', () => {
+    it('should return an array of cats', async () => {
+      const result: any = [];
+      jest.spyOn(controller, 'findAll').mockImplementation(() => result);
+
+      expect(await controller.findAll()).toBe(result);
+    });
+  });
 });
