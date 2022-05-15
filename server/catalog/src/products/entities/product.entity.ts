@@ -9,11 +9,11 @@ export type ProductDocument = Product & Document;
 @Schema()
 export class Product {
     @ApiProperty()
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     name: string;
 
     @ApiProperty()
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     slug: string;
 
     @ApiProperty()

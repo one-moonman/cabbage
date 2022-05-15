@@ -1,18 +1,20 @@
-import express, { Request, Response } from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
-import resolvers from './resolvers';
-import typeDefs from './typeDefs';
+import { ApolloServer } from 'apollo-server';
+import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
+import { loadFilesSync } from '@graphql-tools/load-files';
+import path from 'path';
 
-async function start() {
-    const app = express();
-    const server = new ApolloServer({
-        typeDefs,
-        resolvers,
-        context: (req: Request, res: Response) => { return { req, res } }
-    });
-    await server.start()
-    server.applyMiddleware({ app });
-    app.listen(5000, () => console.log("listening on 5000"))
-}
+const typeDefFiles = loadFilesSync(path.join(__dirname, "/**/*.type.graphql"));
+const resolverFiles = loadFilesSync(path.join(__dirname, "./**/*.resolver.*"));
 
-start().catch(err => console.log(err))
+const typeDefs = mergeTypeDefs(typeDefFiles)
+const resolvers = mergeResolvers(resolverFiles);
+
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    csrfPrevention: true,
+});
+
+server.listen().then(({ url }) => {
+    console.log(`🚀  Server ready at ${url}`);
+});

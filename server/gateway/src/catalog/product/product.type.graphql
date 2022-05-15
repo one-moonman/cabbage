@@ -1,0 +1,12 @@
+type Product {
+    _id: ID!
+    name: String!
+    slug: String!
+    category: String!
+    variants: [String]!
+}
+
+type Query {
+    products: [Product]
+    product (id: String!): Product
+}

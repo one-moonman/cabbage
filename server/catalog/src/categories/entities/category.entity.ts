@@ -8,11 +8,11 @@ export type CategoryDocument = Category & Document;
 @Schema()
 export class Category {
     @ApiProperty()
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     name: string;
 
     @ApiProperty()
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     slug: string;
 
     @ApiProperty({ type: [String], description: 'ids for one-to-many refs' })

@@ -1,0 +1,9 @@
+union Catalog = Category | Product | Variant
+
+type Query {
+    catalog (
+        category:String!,
+        product:String,
+        variant:String
+    ): Catalog
+}

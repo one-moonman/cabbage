@@ -9,11 +9,11 @@ export type VariantDocument = Variant & Document;
 @Schema()
 export class Variant {
     @ApiProperty()
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     name: string;
 
     @ApiProperty()
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     slug: string;
 
     @ApiProperty()
@@ -26,7 +26,7 @@ export class Variant {
 
     @ApiProperty()
     @Prop({ required: true })
-    commited: number;
+    committed: number;
 
     @ApiProperty()
     @Prop({ required: true })

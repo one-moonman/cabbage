@@ -1,0 +1,16 @@
+type Variant {
+    _id: ID!
+    name: String!
+    slug: String!
+    stock: Int
+    availability: Int
+    committed: Int
+    price: Float!
+    category: String!
+    product: String!
+}
+
+type Query {
+    variants: [Variant]
+    variant (id: String!): Variant
+}

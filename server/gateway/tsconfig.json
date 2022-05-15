@@ -1,12 +1,12 @@
 {
-  "compilerOptions": {
-    "target": "ES5",
-    "module": "commonjs",
-    "rootDir": "./",
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowJs": true
-  }
+    "compilerOptions": {
+        "target": "ES5",
+        "module": "commonjs",
+        "rootDir": "./",
+        "outDir": "./build",
+        "esModuleInterop": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowJs": true
+    }
 }
