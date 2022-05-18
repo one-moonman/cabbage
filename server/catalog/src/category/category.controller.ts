@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, applyDecorators } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { NotFoundInterceptor } from '../utils/404.interceptor';
-import { CategoriesService } from './categories.service';
+import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
@@ -14,38 +14,38 @@ const CategoryResponse = () => applyDecorators(
 
 @ApiTags('categories')
 @Controller('categories')
-export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) { }
+export class CategoryController {
+  constructor(private readonly categoryService: CategoryService) { }
 
   @Post()
   @ApiBody({ type: CreateCategoryDto })
   @ApiCreatedResponse({ type: Category })
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+    return this.categoryService.create(createCategoryDto);
   }
 
   @Get()
   @ApiOkResponse({ type: [Category] })
   async findAll() {
-    return this.categoriesService.findAll();
+    return this.categoryService.findAll();
   }
 
-  @Get(':id')
+  @Get(':slug')
   @CategoryResponse()
-  async findOne(@Param('id') id: string) {
-    return this.categoriesService.findById(id);
+  async findOne(@Param('slug') slug: string) {
+    return this.categoryService.findById(slug);
   }
 
-  @Patch(':id')
+  @Patch(':slug')
   @CategoryResponse()
-  async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoriesService.update(id, updateCategoryDto);
+  async update(@Param('slug') slug: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+    return this.categoryService.update(slug, updateCategoryDto);
   }
 
-  @Delete(':id')
+  @Delete(':slug')
   @CategoryResponse()
-  async remove(@Param('id') id: string) {
-    return this.categoriesService.remove(id);
+  async remove(@Param('slug') slug: string) {
+    return this.categoryService.remove(slug);
   }
 }
 

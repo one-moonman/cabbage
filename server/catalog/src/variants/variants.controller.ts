@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Query, applyDecorators } from '@nestjs/common';
-import { VariantsService } from './variants.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Query, applyDecorators, Put } from '@nestjs/common';
+import { VariantService } from './variants.service';
 import { CreateVariantDto } from './dto/create-variant.dto';
 import { UpdateVariantDto } from './dto/update-variant.dto';
-import { ProductsService } from 'src/products/products.service';
+import { ProductService } from 'src/products/products.service';
 import { NotFoundInterceptor } from 'src/utils/404.interceptor';
 import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Variant } from './entities/variant.entity';
@@ -15,19 +15,20 @@ const VariantResponse = () => applyDecorators(
 
 @ApiTags('variants')
 @Controller('variants')
-export class VariantsController {
+export class VariantController {
   constructor(
-    private readonly variantsService: VariantsService,
-    private readonly productsService: ProductsService
+    private readonly variantService: VariantService,
+    private readonly productService: ProductService
   ) { }
 
   @Post()
   @ApiBody({ type: CreateVariantDto })
   @ApiCreatedResponse({ type: Variant })
   async create(@Body() createVariantDto: CreateVariantDto) {
-    const product = await this.productsService.findById(createVariantDto.product);
+    const product = await this.productService.findById(createVariantDto.product);
     if (!product) throw new Error();
-    const variant = await this.variantsService.create(createVariantDto);
+    if (`${product.category}` !== createVariantDto.category) throw new Error();
+    const variant = await this.variantService.create(createVariantDto);
     product.variants.push(variant);
     await product.save();
     return variant;
@@ -36,24 +37,30 @@ export class VariantsController {
   @Get()
   @ApiOkResponse({ type: Variant })
   async findAll() {
-    return this.variantsService.findAll();
+    return this.variantService.findAll();
   }
 
-  @Get(':id')
+  @Get(':slug')
   @VariantResponse()
-  async findOne(@Param('id') id: string, @Query('taken') taken: number) {
-    return this.variantsService.findOne(id, taken);
+  async findBySlug(@Param('slug') id: string) {
+    return this.variantService.findBySlug(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @VariantResponse()
-  async update(@Param('id') id: string, @Body() updateVariantDto: UpdateVariantDto) {
-    return this.variantsService.update(id, updateVariantDto);
+  async get(@Param('id') id: string, @Query('qty') quantity: number) {
+    return this.variantService.findAndRecalculateAvailability(id, quantity);
   }
 
-  @Delete(':id')
+  @Patch(':slug')
   @VariantResponse()
-  async remove(@Param('id') id: string) {
-    return this.variantsService.remove(id);
+  async update(@Param('slug') slug: string, @Body() updateVariantDto: UpdateVariantDto) {
+    return this.variantService.update(slug, updateVariantDto);
+  }
+
+  @Delete(':slug')
+  @VariantResponse()
+  async remove(@Param('slug') slug: string) {
+    return this.variantService.remove(slug);
   }
 }

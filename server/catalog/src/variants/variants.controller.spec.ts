@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { VariantsController } from './variants.controller';
-import { VariantsService } from './variants.service';
+import { VariantController } from './variants.controller';
+import { VariantService } from './variants.service';
 
 describe('VariantsController', () => {
-  let controller: VariantsController;
+  let controller: VariantController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [VariantsController],
-      providers: [VariantsService],
+      controllers: [VariantController],
+      providers: [VariantService],
     }).compile();
 
-    controller = module.get<VariantsController>(VariantsController);
+    controller = module.get<VariantController>(VariantController);
   });
 
   it('should be defined', () => {

@@ -9,7 +9,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Cabbage catalog')
-    .setDescription('asdasd')
+    .setDescription('cabbage store catalog microservice')
     .setVersion('1.0')
     .build();
 

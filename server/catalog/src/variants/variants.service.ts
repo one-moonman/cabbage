@@ -5,14 +5,14 @@ import { UpdateVariantDto } from './dto/update-variant.dto';
 import { Variant, VariantModel } from './entities/variant.entity';
 
 @Injectable()
-export class VariantsService {
+export class VariantService {
   constructor(@InjectModel(Variant.name) private readonly variantModel: VariantModel) { }
 
   async create(createVariantDto: CreateVariantDto) {
     return this.variantModel.create({
       ...createVariantDto,
       availability: createVariantDto.stock,
-      commited: 0
+      committed: 0
     });
   }
 
@@ -20,16 +20,38 @@ export class VariantsService {
     return this.variantModel.find().exec();
   }
 
-  async findOne(id: string, taken: number) {
-    const doc = await this.variantModel.findById(id).exec();
-    return this.variantModel.findByIdAndUpdate(id, { availability: doc.availability - taken })
+  async findById(id: string) {
+    return this.variantModel.findById(id).exec();
   }
 
-  async update(id: string, updateVariantDto: UpdateVariantDto) {
-    return this.variantModel.findByIdAndUpdate(id, updateVariantDto);
+  async findBySlug(slug: string) {
+    return this.variantModel.findOne({ slug }).exec();
   }
 
-  async remove(id: string) {
-    return this.variantModel.findByIdAndRemove(id);
+  async findBySlugAndRefSlugs(categorySlug: string, productSlug: string, variantSlug: string) {
+    const variant = await this.variantModel.findOne({ slug: variantSlug })
+      .populate('category')
+      .populate('product')
+      .exec();
+    if (
+      variant.product.slug === productSlug &&
+      variant.category.slug === categorySlug
+    ) {
+      return variant.depopulate('product').depopulate('category');
+    }
+    return null;
+  }
+
+  // or slug
+  async findAndRecalculateAvailability(id: string, availability: number) {
+    return this.variantModel.findByIdAndUpdate(id, { availability })
+  }
+
+  async update(slug: string, updateVariantDto: UpdateVariantDto) {
+    return this.variantModel.findOneAndUpdate({ slug }, updateVariantDto).exec();
+  }
+
+  async remove(slug: string) {
+    return this.variantModel.findOneAndRemove({ slug }).exec();
   }
 }

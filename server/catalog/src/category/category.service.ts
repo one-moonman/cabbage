@@ -6,7 +6,7 @@ import { Category, CategoryModel } from './entities/category.entity';
 import { Connection } from 'mongoose';
 
 @Injectable()
-export class CategoriesService {
+export class CategoryService {
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(Category.name) private readonly categoryModel: CategoryModel) {
@@ -28,15 +28,16 @@ export class CategoriesService {
     return this.categoryModel.findOne({ slug }).exec();
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryModel.findByIdAndUpdate(id, updateCategoryDto);
+  async update(slug: string, updateCategoryDto: UpdateCategoryDto) {
+    return this.categoryModel.findOneAndUpdate({ slug }, updateCategoryDto);
   }
 
-  async remove(id: string) {
+  async remove(slug: string) {
+    const category = await this.categoryModel.findOneAndRemove({ slug }).exec();
     await Promise.all([
-      this.connection.collection('products').deleteMany({ category: id }),
-      this.connection.collection('variants').deleteMany({ category: id })
+      this.connection.collection('products').deleteMany({ category: category.id }),
+      this.connection.collection('variants').deleteMany({ category: category.id })
     ])
-    return this.categoryModel.findByIdAndRemove(id);
+    return category;
   }
 }

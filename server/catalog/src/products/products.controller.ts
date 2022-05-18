@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, NotFoundException, applyDecorators } from '@nestjs/common';
-import { ProductsService } from './products.service';
+import { ProductService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { CategoriesService } from 'src/categories/categories.service';
+import { CategoryService } from 'src/category/category.service';
 import { NotFoundInterceptor } from 'src/utils/404.interceptor';
 import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
@@ -15,19 +15,19 @@ const ProductResponse = () => applyDecorators(
 
 @ApiTags('products')
 @Controller('products')
-export class ProductsController {
+export class ProductController {
   constructor(
-    private readonly categoriesService: CategoriesService,
-    private readonly productsService: ProductsService
+    private readonly categoriyService: CategoryService,
+    private readonly productService: ProductService
   ) { }
 
   @Post()
   @ApiBody({ type: CreateProductDto })
   @ApiCreatedResponse({ type: Product })
   async create(@Body() createProductDto: CreateProductDto) {
-    const category = await this.categoriesService.findById(createProductDto.category);
+    const category = await this.categoriyService.findById(createProductDto.category);
     if (!category) throw new NotFoundException('Category Not Found');
-    const product = await this.productsService.create(createProductDto);
+    const product = await this.productService.create(createProductDto);
     category.products.push(product);
     await category.save();
     return product;
@@ -36,24 +36,30 @@ export class ProductsController {
   @Get()
   @ApiOkResponse({ type: [Product] })
   async findAll() {
-    return this.productsService.findAll()
+    return this.productService.findAll()
   }
 
-  @Get(':id')
+  @Get(':slug')
   @ProductResponse()
-  async findOne(@Param('id') id: string) {
-    return this.productsService.findById(id);
+  async findOne(@Param('slug') slug: string) {
+    return this.productService.findBySlug(slug);
   }
 
-  @Patch(':id')
+  @Get(':categorySlug/:productSlug')
   @ProductResponse()
-  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(id, updateProductDto);
+  async findBy(@Param('categorySlug') categorySlug: string, @Param('productSlug') productSlug: string) {
+    return this.productService.findBySlugAndCategory(categorySlug, productSlug);
   }
 
-  @Delete(':id')
+  @Patch(':slug')
   @ProductResponse()
-  async remove(@Param('id') id: string) {
-    return this.productsService.remove(id);
+  async update(@Param('slug') slug: string, @Body() updateProductDto: UpdateProductDto) {
+    return this.productService.update(slug, updateProductDto);
+  }
+
+  @Delete(':slug')
+  @ProductResponse()
+  async remove(@Param('slug') slug: string) {
+    return this.productService.remove(slug);
   }
 }

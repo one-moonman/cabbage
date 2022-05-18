@@ -1,11 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { ProductsController } from './products.controller';
+import { ProductService } from './products.service';
+import { ProductController } from './products.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './entities/product.entity';
-import { CategoriesModule } from 'src/categories/categories.module';
-import { CategoriesService } from 'src/categories/categories.service';
-import { Category, CategorySchema } from 'src/categories/entities/category.entity';
+import { CategoriesModule } from 'src/category/category.module';
+import { CategoryService } from 'src/category/category.service';
+import { Category, CategorySchema } from 'src/category/entities/category.entity';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { Category, CategorySchema } from 'src/categories/entities/category.entit
     ),
     CategoriesModule
   ],
-  controllers: [ProductsController],
-  providers: [ProductsService, CategoriesService]
+  controllers: [ProductController],
+  providers: [ProductService, CategoryService]
 })
 export class ProductsModule { }

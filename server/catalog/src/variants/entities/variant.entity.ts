@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Document, Types, Model } from 'mongoose';
-import { Category } from 'src/categories/entities/category.entity';
+import { Category } from 'src/category/entities/category.entity';
 import { Product } from 'src/products/entities/product.entity';
 
 export type VariantDocument = Variant & Document;

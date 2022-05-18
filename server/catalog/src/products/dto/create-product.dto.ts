@@ -16,10 +16,6 @@ export class CreateProductDto {
     @IsNotEmpty()
     slug: string;
 
-    @ApiPropertyOptional()
-    @IsNumber()
-    price?: number;
-
     @ApiProperty({
         description: 'category id for many to one ref'
     })

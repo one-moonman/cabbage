@@ -6,7 +6,7 @@ import { Product, ProductModel } from './entities/product.entity';
 import { Connection } from 'mongoose';
 
 @Injectable()
-export class ProductsService {
+export class ProductService {
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel(Product.name) private readonly productModel: ProductModel
@@ -24,12 +24,25 @@ export class ProductsService {
     return this.productModel.findById(id).exec();
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
-    return this.productModel.findByIdAndUpdate(id, updateProductDto);
+  async findBySlug(slug: string) {
+    return this.productModel.findOne({ slug }).exec();
   }
 
-  async remove(id: string) {
-    await this.connection.collection('variants').deleteMany({ product: id });
-    return this.productModel.findByIdAndRemove(id);
+  async findBySlugAndCategory(categorySlug: string, productSlug: string) {
+    const product = await this.productModel.findOne({ slug: productSlug })
+      .populate('category')
+      .exec();
+    if (product.category.slug !== categorySlug) return null;
+    return product.depopulate('category');
+  }
+
+  async update(slug: string, updateProductDto: UpdateProductDto) {
+    return this.productModel.findOneAndUpdate({ slug }, updateProductDto);
+  }
+
+  async remove(slug: string) {
+    const product = await this.productModel.findOneAndRemove({ slug });
+    await this.connection.collection('variants').deleteMany({ product: product.id });
+    return product;
   }
 }

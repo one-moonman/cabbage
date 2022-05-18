@@ -1,0 +1,2 @@
+create admin panel
+remove swagger as it is useless
