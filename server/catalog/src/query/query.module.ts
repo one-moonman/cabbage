@@ -3,13 +3,13 @@ import { QueryController } from './query.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategoriesModule } from 'src/category/category.module';
 import { CategoryService } from 'src/category/category.service';
-import { ProductsModule } from 'src/products/products.module';
-import { VariantsModule } from 'src/variants/variants.module';
+import { ProductsModule } from 'src/product/product.module';
+import { VariantsModule } from 'src/variant/variant.module';
 import { Category, CategorySchema } from 'src/category/entities/category.entity';
-import { Product, ProductSchema } from 'src/products/entities/product.entity';
-import { Variant, VariantSchema } from 'src/variants/entities/variant.entity';
-import { ProductService } from 'src/products/products.service';
-import { VariantService } from 'src/variants/variants.service';
+import { Product, ProductSchema } from 'src/product/entities/product.entity';
+import { Variant, VariantSchema } from 'src/variant/entities/variant.entity';
+import { ProductService } from 'src/product/product.service';
+import { VariantService } from 'src/variant/variant.service';
 
 @Module({
     imports: [MongooseModule.forFeature([

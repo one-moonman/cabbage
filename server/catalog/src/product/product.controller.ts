@@ -1,17 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, NotFoundException, applyDecorators } from '@nestjs/common';
-import { ProductService } from './products.service';
+import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CategoryService } from 'src/category/category.service';
-import { NotFoundInterceptor } from 'src/utils/404.interceptor';
-import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
+import findResponseDecorator from 'src/utils/find-response.decorator';
 
-const ProductResponse = () => applyDecorators(
-  ApiOkResponse({ type: Product }),
-  ApiNotFoundResponse(),
-  UseInterceptors(new NotFoundInterceptor('Product Not Found'))
-);
+const ProductResponse = () => findResponseDecorator(Product, "Product Not Found");
 
 @ApiTags('products')
 @Controller('products')

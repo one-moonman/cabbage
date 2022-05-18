@@ -3,10 +3,10 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CategoryService } from 'src/category/category.service';
 import { Category } from 'src/category/entities/category.entity';
-import { Product } from 'src/products/entities/product.entity';
-import { ProductService } from 'src/products/products.service';
-import { Variant } from 'src/variants/entities/variant.entity';
-import { VariantService } from 'src/variants/variants.service';
+import { Product } from 'src/product/entities/product.entity';
+import { ProductService } from 'src/product/product.service';
+import { Variant } from 'src/variant/entities/variant.entity';
+import { VariantService } from 'src/variant/variant.service';
 
 @ApiTags('query')
 @Controller('query')

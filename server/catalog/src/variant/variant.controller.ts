@@ -1,17 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Query, applyDecorators, Put } from '@nestjs/common';
-import { VariantService } from './variants.service';
+import { VariantService } from './variant.service';
 import { CreateVariantDto } from './dto/create-variant.dto';
 import { UpdateVariantDto } from './dto/update-variant.dto';
-import { ProductService } from 'src/products/products.service';
-import { NotFoundInterceptor } from 'src/utils/404.interceptor';
-import { ApiBody, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ProductService } from 'src/product/product.service';
+import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Variant } from './entities/variant.entity';
+import findResponseDecorator from 'src/utils/find-response.decorator';
 
-const VariantResponse = () => applyDecorators(
-  ApiOkResponse({ type: Variant }),
-  ApiNotFoundResponse(),
-  UseInterceptors(new NotFoundInterceptor('Variant Not Found'))
-);
+const VariantResponse = () => findResponseDecorator(Variant, "Variant Not Found");
 
 @ApiTags('variants')
 @Controller('variants')
