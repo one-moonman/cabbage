@@ -1,18 +1,10 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { CategoriesModule } from './category/category.module';
-import { VariantsModule } from './variant/variant.module';
-import { ProductsModule } from './product/product.module';
-import { QueryModule } from './query/query.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot('mongodb://localhost/test'),
-    CategoriesModule,
-    ProductsModule,
-    VariantsModule,
-    QueryModule
-  ],
+  imports: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
-
-export class AppModule { }
+export class AppModule {}

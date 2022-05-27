@@ -1,20 +1,78 @@
-import { ApolloServer } from 'apollo-server';
-import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
-import { loadFilesSync } from '@graphql-tools/load-files';
+// express
+import express, { NextFunction, Request } from 'express';
+import session from 'express-session';
+import 'dotenv/config';
+import 'reflect-metadata';
+// node
 import path from 'path';
+import cors from 'cors';
+// apollo
+import { ApolloServer } from 'apollo-server-express';
+import { buildSchema } from 'type-graphql';
 
-const typeDefFiles = loadFilesSync(path.join(__dirname, "/**/*.type.graphql"));
-const resolverFiles = loadFilesSync(path.join(__dirname, "./**/*.resolver.*"));
+//resolvers
+import CategoryResolver from './catalog/resolvers/category.resolver';
+import ProductResolver from './catalog/resolvers/product.resolver';
+import VariantResolver from './catalog/resolvers/variant.resolver';
+import CatalogQueryResolver from './catalog/resolvers/catalog-query.resolver';
+import CartItemResolver from './catalog/resolvers/cart-item.resolver';
 
-const typeDefs = mergeTypeDefs(typeDefFiles)
-const resolvers = mergeResolvers(resolverFiles);
+import connectRedis from 'connect-redis';
+import { redis } from './config';
+const RedisStore = connectRedis(session);
 
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    csrfPrevention: true,
-});
+declare module 'express-session' {
+    interface SessionData {
+        total: number,
+        authenticated: boolean,
+    }
+}
 
-server.listen().then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
-});
+import constants from './constants';
+const { port } = constants;
+
+
+
+async function startApp() {
+    const app = express();
+
+    app.set("trust proxy", 1);
+    //app.use()
+
+    app.use(session({
+        name: "sessiika",
+        resave: false,
+        saveUninitialized: false,
+        store: new RedisStore({ client: redis }),
+        secret: "sadasd",
+        cookie: {
+            httpOnly: false,
+            sameSite: 'none',
+            secure: true,//process.env.NODE_ENV === "production",
+            maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+        }
+    }))
+
+    const schema = await buildSchema({
+        resolvers: [CategoryResolver, ProductResolver, VariantResolver, CatalogQueryResolver, CartItemResolver],
+    })
+    const server = new ApolloServer({
+        schema,
+        csrfPrevention: true,
+        context: ({ req, res }) => ({ req, res, redis })
+    });
+    await server.start();
+    server.applyMiddleware({
+        app,
+        cors: {
+            origin: ['https://studio.apollographql.com'],
+            credentials: true
+        }
+    });
+
+    app.listen(port, () => {
+        console.log(`GAWATAY LISTENIG AT PORT 4000`);
+    })
+}
+
+startApp().catch(err => console.error(err))

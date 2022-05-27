@@ -1,0 +1,95 @@
+version: "3.9"
+services:
+  redis-db:
+    container_name: redis
+    image: redis
+    restart: always
+    volumes:
+      - redis-volume:/data
+    ports:
+      - 6379:6379
+    networks:
+      - sharedNet
+
+  mongo-db:
+    container_name: mongo
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-volume:/data/db
+    networks:
+      - sharedNet
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/catalog
+    depends_on:
+      - mongo-db
+    networks:
+      - sharedNet
+
+  catalog:
+    container_name: catalog-api
+    environment:
+      PORT: ${CATALOG_PORT}
+      DATABASE_URL: ${CATALOG_DATABASE}
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
+    ports:
+      - ${CATALOG_PORT}:${CATALOG_PORT}
+    networks:
+      - sharedNet
+    restart: unless-stopped
+    depends_on:
+      - mongo-db
+
+  cart:
+    container_name: cart-api
+    environment:
+      PORT: ${CART_PORT}
+      DATABASE_URL: ${CART_DATABASE}
+    build:
+      context: ./cart
+      dockerfile: Dockerfile
+    ports:
+      - ${CART_PORT}:${CART_PORT}
+    networks:
+      - sharedNet
+    restart: unless-stopped
+    depends_on:
+      - mongo-db
+
+  gateway:
+    container_name: gateway-gql
+    environment:
+      PORT: ${GATEWAY_PORT}
+      CATALOG_URL: http://catalog-api:3000/api/v1/catalog/
+      CART_URL: http://cart-api:3001/api/v1/
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - ${GATEWAY_PORT}:${GATEWAY_PORT}
+    networks:
+      - sharedNet
+    restart: unless-stopped
+    depends_on:
+      - catalog
+      - cart
+      - redis-db
+
+volumes:
+  mongo-volume:
+  redis-volume:
+
+
+networks:
+  sharedNet:
+    driver: bridge
