@@ -1,43 +1,60 @@
 import { Request, Response } from 'express';
 import { NotFound } from 'http-errors';
-import CartItemService from '../services/cart-items.service';
+import { CartItem } from '../model';
 
-export default class CartItemController {
+interface ReqBody {
+    item_id: string,
+    qty: number,
+    variant_price: number
+}
+
+export default {
     // GET -> /?sid=
-    public static async getItems(req: Request, res: Response) {
-        const sid = `${req.query.sid}`;
+    getItems: async (req: Request, res: Response) => {
+        const sid = req.query.sid as string;
         let items = [];
-        if (sid) items = await CartItemService.findByCart(sid);
-        else items = await CartItemService.findAll();
+        if (sid) items = await CartItem.find({ sid }).exec();
+        else items = await CartItem.find({}).exec();
         return res.status(200).json(items);
-    }
+    },
 
     // PUT -> /
-    public static async increaseQuantity(req: Request, res: Response) {
-        const item = await CartItemService.increaseQuantity(req.body);
+    increaseQuantity: async (req: Request, res: Response) => {
+        const { item_id, variant_price, qty }: ReqBody = req.body;
+        let item = await CartItem.findById(item_id).exec();
         if (!item) throw new NotFound();
+        item = await CartItem.findByIdAndUpdate(item_id, {
+            total: item.total + qty * variant_price,
+            quantity: item.quantity + qty
+        }).exec();
         return res.status(200).json(item);
-    }
+    },
 
     // PATCH -> /
-    public static async decreaseQuantity(req: Request, res: Response) {
-        const item = await CartItemService.decreaseQuantity(req.body);
+    decreaseQuantity: async (req: Request, res: Response) => {
+        const { item_id, variant_price, qty }: ReqBody = req.body;
+        let item = await CartItem.findById(item_id).exec();
         if (!item) throw new NotFound();
+        item = await CartItem.findByIdAndUpdate(item_id, {
+            total: item.total - qty * variant_price,
+            quantity: item.quantity - qty
+        }).exec();
         return res.status(200).json(item);
-    }
+    },
 
     // DELETE -> /:id
-    public static async remove(req: Request, res: Response) {
-        const item = await CartItemService.remove(req.params.id);
-        if (!item) throw new NotFound();
+    remove: async (req: Request, res: Response) => {
+        const item = await CartItem.findByIdAndRemove(req.params.id).exec();
         return res.status(200).json(item);
-    }
+    },
 
     //TODO: change to separate router
-    // GET -> /taken/:variant_id
-    public static async calculateTaken(req: Request, res: Response) {
-        const variant_id = req.params.variant_id;
-        const taken = await CartItemService.getTakenQuantity(variant_id);
+    // GET -> /taken/:id
+    calculateTaken: async (req: Request, res: Response) => {
+        const { id } = req.params;
+        let taken = 0;
+        const all = await CartItem.find({ product_variant: id }).exec();
+        all.forEach(item => taken += item.quantity)
         return res.status(200).json(taken);
     }
 }

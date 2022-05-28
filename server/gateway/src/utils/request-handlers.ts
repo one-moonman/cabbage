@@ -14,7 +14,6 @@ export async function put(url: string, body?: object) {
         const response = await axios.put(url, body);
         return response.data;
     } catch (error) {
-        console.log(error)
         throw new Error(error);
     }
 }

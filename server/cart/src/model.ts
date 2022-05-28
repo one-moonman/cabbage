@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export interface ICartItem {
     sid: string,                                    // redis session_id
-    product_variant_id: mongoose.Types.ObjectId,
+    product_variant: mongoose.Types.ObjectId,
     total: number,
     quantity: number
 }
@@ -10,10 +10,22 @@ export interface ICartItem {
 export const CartItem = mongoose.model<ICartItem>(
     'Cart-items',
     new mongoose.Schema<ICartItem>({
-        sid: { required: true, type: String },
-        product_variant_id: { required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Variants' },
-        total: { required: true, type: Number },
-        quantity: { required: true, type: Number }
+        sid: {
+            type: String,
+            required: true
+        },
+        product_variant: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Variants'
+        },
+        total: {
+            type: Number,
+            required: true
+        },
+        quantity: {
+            type: Number,
+            required: true
+        }
     })
 );
-
