@@ -72,6 +72,7 @@ services:
       PORT: ${GATEWAY_PORT}
       CATALOG_URL: http://catalog-api:3000/api/v1/catalog/
       CART_URL: http://cart-api:3001/api/v1/
+      SECRET: sometihngsecret
     build:
       context: ./gateway
       dockerfile: Dockerfile

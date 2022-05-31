@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export interface IProductVariant {
+export interface IVariant {
     slug: string;
     name: string;
     description: string;
@@ -13,9 +13,9 @@ export interface IProductVariant {
     product: mongoose.Types.ObjectId;
 }
 
-export const Variant = mongoose.model<IProductVariant>(
+export const Variant = mongoose.model<IVariant>(
     'Variant',
-    new mongoose.Schema<IProductVariant>({
+    new mongoose.Schema<IVariant>({
         slug: String,
         name: String,
         description: String,
@@ -26,4 +26,3 @@ export const Variant = mongoose.model<IProductVariant>(
         product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
     })
 );
-

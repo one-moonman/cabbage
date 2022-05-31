@@ -1,4 +1,5 @@
 import { ObjectType, Field, ID } from "type-graphql";
+import FieldError from "./field-error.type";
 
 @ObjectType()
 export default class CartItem {
@@ -6,7 +7,7 @@ export default class CartItem {
     _id: string;
 
     @Field()
-    product_variant_id: string;
+    product_variant: string;
 
     @Field()
     quantity: number;
@@ -16,4 +17,14 @@ export default class CartItem {
 
     @Field()
     sid: string;
+}
+
+
+@ObjectType()
+export class CartItemResponse {
+    @Field(() => FieldError, { nullable: true })
+    error?: FieldError;
+
+    @Field(() => CartItem, { nullable: true })
+    item?: CartItem;
 }

@@ -16,16 +16,17 @@ export default {
     addItemToCart: async (req: Request, res: Response) => {
         const { sid, qty, variant }: ReqBody = req.body;
         let item = await CartItem.findOne({ sid, product_variant: variant._id }).exec();
-        if (!item) item = await CartItem.create({
+        if (item) {
+            item.total += qty * variant.price;
+            item.quantity += qty;
+            await item.save();
+        }
+        else item = await CartItem.create({
             sid,
             product_variant: variant._id,
             total: qty * variant.price,
             quantity: qty
         });
-        else item = await CartItem.findByIdAndUpdate(item._id, {
-            total: item.total + qty * variant.price,
-            quantity: item.quantity + qty
-        }).exec();
         return res.status(200).json(item);
     },
 
@@ -38,10 +39,9 @@ export default {
             await item.remove();
             return res.status(200).json(item);
         }
-        item = await CartItem.findByIdAndUpdate(item._id, {
-            total: item.total - qty * variant.price,
-            quantity: item.quantity - qty
-        }).exec();
+        item.total -= qty * variant.price;
+        item.quantity -= qty;
+        await item.save();
         return res.status(200).json(item);
     },
 

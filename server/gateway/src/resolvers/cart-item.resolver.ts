@@ -1,30 +1,18 @@
-import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
-import { get, put } from "../utils/request-handlers";
-import { MyContext } from "../utils/types";
-import CartItem from "../types/cart-item.type";
+import { Ctx, Query, Resolver } from "type-graphql";
+import axios from "axios";
+import { Context } from "../utils/types";
+import CartItem, { CartItemResponse } from "../types/cart-item.type";
 
-import constants from "../constants";
-const { catalog, cart } = constants;
+import { urls } from "../constants";
+const URL = urls + 'cart-items/';
 
 @Resolver(returns => CartItem)
 export default class CartItemResolver {
-    @Mutation(returns => CartItem)
-    async addItemToCart(
-        @Arg('qty') qty: number = 1,
-        @Arg('slug') slug: string,
-        @Ctx() { req }: MyContext
-    ) {
-        if (!req.session.total) req.session.total = 0
-        const variant = await get(catalog + 'variants/' + slug);
-        const item = await put(cart + 'cart', {
-            qty,
-            sid: req.sessionID,
-            variant: {
-                _id: variant._id,
-                price: variant.price
-            }
-        })
-        req.session.total += item.total
-        return item;
+
+    @Query(returns => [CartItem])
+    async getItems(@Ctx() { req }: Context) {
+        const response = await axios.get(URL + req.sessionID)
+            .catch(error => { throw new Error(error.response.data.message) });
+        return response.data;
     }
 }

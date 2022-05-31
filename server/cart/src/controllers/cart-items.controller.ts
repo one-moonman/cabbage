@@ -23,10 +23,9 @@ export default {
         const { item_id, variant_price, qty }: ReqBody = req.body;
         let item = await CartItem.findById(item_id).exec();
         if (!item) throw new NotFound();
-        item = await CartItem.findByIdAndUpdate(item_id, {
-            total: item.total + qty * variant_price,
-            quantity: item.quantity + qty
-        }).exec();
+        item.total += qty * variant_price;
+        item.quantity += qty;
+        await item.save();
         return res.status(200).json(item);
     },
 
@@ -35,10 +34,9 @@ export default {
         const { item_id, variant_price, qty }: ReqBody = req.body;
         let item = await CartItem.findById(item_id).exec();
         if (!item) throw new NotFound();
-        item = await CartItem.findByIdAndUpdate(item_id, {
-            total: item.total - qty * variant_price,
-            quantity: item.quantity - qty
-        }).exec();
+        item.total -= qty * variant_price;
+        item.quantity -= qty;
+        await item.save();
         return res.status(200).json(item);
     },
 

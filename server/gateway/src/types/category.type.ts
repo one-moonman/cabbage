@@ -1,4 +1,5 @@
 import { ObjectType, Field, ID } from "type-graphql";
+import FieldError from "./field-error.type";
 
 @ObjectType()
 export default class Category {
@@ -11,6 +12,18 @@ export default class Category {
     @Field()
     slug: string;
 
+    @Field({ nullable: true })
+    description: string;
+
     @Field(type => [String])
     products: string[];
+}
+
+@ObjectType()
+export class CategoryResponse {
+    @Field(() => FieldError, { nullable: true })
+    error?: FieldError;
+
+    @Field(() => Category, { nullable: true })
+    category?: Category;
 }

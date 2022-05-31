@@ -1,20 +1,33 @@
-import { get } from '../utils/request-handlers';
-import constants from '../constants';
 import { Arg, Query, Resolver } from 'type-graphql';
-import Category from '../types/category.type';
+import axios from 'axios';
+import Category, { CategoryResponse } from '../types/category.type';
+import { urls } from '../constants';
 
-const { catalog } = constants;
+const URL = urls.catalog + 'category';
 
 @Resolver(Category)
 export default class CategoryResolver {
     @Query(returns => [Category])
-    async getAllCategories() { return get(catalog + 'categories') }
+    async getAllCategories() {
+        const response = await axios.get(URL)
+            .catch(error => { throw new Error(error.response.data.message) });
+        return response.data;
+    }
 
-    @Query(returns => Category)
+    @Query(returns => CategoryResponse)
     async getCategoryBySlug(@Arg('slug') slug: string) {
-        const category = await get(catalog + 'categories/' + slug);
-        // throw error if Undefined
-        return category;
+        try {
+            const response = await axios.get(URL + '/' + slug)
+                .catch(error => { throw new Error(error.response.data.message) });
+            return { category: response.data };
+        } catch (error) {
+            return {
+                error: {
+                    field: 'slug',
+                    message: error.message
+                }
+            }
+        }
     }
 }
 

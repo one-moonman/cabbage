@@ -24,6 +24,6 @@ router
     .patch(bodyValidator, CartItemController.decreaseQuantity)
 
 router.delete('/:id', CartItemController.remove)
-router.get('/getTaken/:variant_id', CartItemController.calculateTaken)
+router.get('/getTaken/:id', CartItemController.calculateTaken)
 
 export default router;

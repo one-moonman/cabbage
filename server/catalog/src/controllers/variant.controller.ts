@@ -19,8 +19,10 @@ export default {
     getOneBySlugAndUpdate: async (req: Request, res: Response) => {
         const { slug } = req.params;
         const availability: number = req.query.qty as any;
-        const doc = await Variant.findOneAndUpdate({ slug }, { availability }).exec();
+        const doc = await Variant.findOne({ slug }).exec()
         if (!doc) throw new NotFound();
+        doc.availability = availability;
+        await doc.save();
         return res.status(200).json(doc);
     }
 }

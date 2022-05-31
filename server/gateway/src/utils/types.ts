@@ -1,9 +1,7 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import Redis from "ioredis";
 
-export type Args = Record<string, any>;
-
-export type MyContext = {
+export type Context = {
     req: Request
     res: Response
     redis: Redis
