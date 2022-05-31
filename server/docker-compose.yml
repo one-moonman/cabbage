@@ -28,7 +28,7 @@ services:
     ports:
       - 8081:8081
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/catalog
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/
     depends_on:
       - mongo-db
     networks:
@@ -37,13 +37,13 @@ services:
   catalog:
     container_name: catalog-api
     environment:
-      PORT: ${CATALOG_PORT}
-      DATABASE_URL: ${CATALOG_DATABASE}
+      PORT: 3000
+      DATABASE_URL: mongodb://mongo:27017/catalog
     build:
       context: ./catalog
       dockerfile: Dockerfile
     ports:
-      - ${CATALOG_PORT}:${CATALOG_PORT}
+      - 3000:3000
     networks:
       - sharedNet
     restart: unless-stopped
@@ -53,13 +53,29 @@ services:
   cart:
     container_name: cart-api
     environment:
-      PORT: ${CART_PORT}
-      DATABASE_URL: ${CART_DATABASE}
+      PORT: 3001
+      DATABASE_URL: mongodb://mongo:27017/catalog
     build:
       context: ./cart
       dockerfile: Dockerfile
     ports:
-      - ${CART_PORT}:${CART_PORT}
+      - 3001:3001
+    networks:
+      - sharedNet
+    restart: unless-stopped
+    depends_on:
+      - mongo-db
+
+  order:
+    container_name: order-api
+    environment:
+      PORT: 3002
+      DATABASE_URL: mongodb://mongo:27017/catalog
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    ports:
+      - 3002:3002
     networks:
       - sharedNet
     restart: unless-stopped
@@ -69,15 +85,16 @@ services:
   gateway:
     container_name: gateway-gql
     environment:
-      PORT: ${GATEWAY_PORT}
+      PORT: 4000
       CATALOG_URL: http://catalog-api:3000/api/v1/catalog/
       CART_URL: http://cart-api:3001/api/v1/
+      ORDER_URL: http://order-api:3002/api/v1/order
       SECRET: sometihngsecret
     build:
       context: ./gateway
       dockerfile: Dockerfile
     ports:
-      - ${GATEWAY_PORT}:${GATEWAY_PORT}
+      - 4000:4000
     networks:
       - sharedNet
     restart: unless-stopped
