@@ -35,7 +35,7 @@ const server = http.createServer(async (req, res) => {
                 _id: order.insertedId
             }
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.write(JSON.stringify({ status: 200, data }));
+            res.write(JSON.stringify(data));
             res.end();
         } else {
             res.writeHead(500, { 'Content-Type': 'application/json' });

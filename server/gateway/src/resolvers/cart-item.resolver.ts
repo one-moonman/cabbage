@@ -15,4 +15,6 @@ export default class CartItemResolver {
             .catch(error => { throw new Error(error.response.data.message) });
         return response.data;
     }
+
+
 }

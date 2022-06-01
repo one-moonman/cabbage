@@ -99,6 +99,7 @@ services:
       - sharedNet
     restart: unless-stopped
     depends_on:
+      - order
       - catalog
       - cart
       - redis-db

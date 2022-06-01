@@ -7,13 +7,13 @@ import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 
-import { port, __prod__ } from './constants';
+import { message, port, __prod__ } from './constants';
 import { redis, cors, session } from './config';
 
 async function startApp() {
     const app = express();
 
-    app.set("trust proxy", __prod__);
+    app.set("trust proxy", 1);
     app.use(session);
 
     const server = new ApolloServer({
@@ -27,9 +27,7 @@ async function startApp() {
     await server.start();
     server.applyMiddleware({ app, cors });
 
-    app.listen(port, () => {
-        console.log(`GAWATAY LISTENIG AT PORT 4000`);
-    })
+    app.listen(port, () => console.warn(message))
 }
 
 startApp().catch(err => console.error(err))

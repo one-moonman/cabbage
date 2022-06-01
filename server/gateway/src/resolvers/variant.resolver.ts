@@ -19,7 +19,7 @@ export default class VariantResolver {
         try {
             let response = await axios.get(urls.cart + 'cart-items/getTaken/' + variant._id)
                 .catch(error => { throw new Error(error.response.data.message) });
-            const qty = variant.stock - response.data;
+            const qty = variant.stock - variant.committed - response.data;
             response = await axios.put(URL + '/' + variant.slug + '?qty=' + qty)
                 .catch(error => { throw new Error(error.response.data.message) });
             return response.data.availability;

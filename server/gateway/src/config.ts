@@ -10,7 +10,7 @@ import { secret, __prod__ } from './constants';
 declare module 'express-session' {
     interface SessionData {
         total: number,
-        authenticated: boolean,
+        authenticated: boolean,     // for future implementation
     }
 }
 
@@ -24,7 +24,7 @@ export const session = expressSession({
     cookie: {
         httpOnly: false,
         sameSite: 'none',
-        secure: __prod__,
+        secure: true,
         maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
     }
 })
