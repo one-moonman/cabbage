@@ -5,7 +5,7 @@ export const redis = new Redis("redis://redis:6379");
 // express-session 
 import expressSession from 'express-session';
 import connectRedis from 'connect-redis';
-import { secret, __prod__ } from './constants';
+import { secret, __prod__ } from './common/constants';
 
 declare module 'express-session' {
     interface SessionData {

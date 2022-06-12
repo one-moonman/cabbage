@@ -2,12 +2,6 @@ import { Request, Response } from 'express';
 import { NotFound } from 'http-errors';
 import { CartItem } from '../model';
 
-interface ReqBody {
-    item_id: string,
-    qty: number,
-    variant_price: number
-}
-
 export default {
     // GET -> /?sid=
     getItems: async (req: Request, res: Response) => {
@@ -20,10 +14,11 @@ export default {
 
     // PUT -> /
     increaseQuantity: async (req: Request, res: Response) => {
-        const { item_id, variant_price, qty }: ReqBody = req.body;
-        let item = await CartItem.findById(item_id).exec();
+        const qty = +(req.query.qty);
+        let item = await CartItem.findById(req.params.id).exec();
         if (!item) throw new NotFound();
-        item.total += qty * variant_price;
+        const variantPrice = item.total / qty;
+        item.total += Math.round(qty * variantPrice * 100) / 100;
         item.quantity += qty;
         await item.save();
         return res.status(200).json(item);
@@ -31,10 +26,11 @@ export default {
 
     // PATCH -> /
     decreaseQuantity: async (req: Request, res: Response) => {
-        const { item_id, variant_price, qty }: ReqBody = req.body;
-        let item = await CartItem.findById(item_id).exec();
+        const qty = +(req.query.qty);
+        let item = await CartItem.findById(req.params.id).exec();
         if (!item) throw new NotFound();
-        item.total -= qty * variant_price;
+        const variantPrice = item.total / qty;
+        item.total -= Math.round(qty * variantPrice * 100) / 100;
         item.quantity -= qty;
         await item.save();
         return res.status(200).json(item);
@@ -49,9 +45,8 @@ export default {
     //TODO: change to separate router
     // GET -> /taken/:id
     calculateTaken: async (req: Request, res: Response) => {
-        const { id } = req.params;
         let taken = 0;
-        const all = await CartItem.find({ product_variant: id }).exec();
+        const all = await CartItem.find({ product_variant: req.params.id }).exec();
         all.forEach(item => taken += item.quantity)
         return res.status(200).json(taken);
     }

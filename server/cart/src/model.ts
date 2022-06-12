@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 
 export interface ICartItem {
-    sid: string,                                    // redis session_id
+    // redis session id
+    sid: string,
+    // product variant id                                  
     product_variant: mongoose.Types.ObjectId,
     total: number,
     quantity: number

@@ -2,7 +2,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import FieldError from "./field-error.type";
 
 @ObjectType()
-export default class Category {
+export class Category {
     @Field(type => ID)
     _id: string;
 
@@ -25,5 +25,5 @@ export class CategoryResponse {
     error?: FieldError;
 
     @Field(() => Category, { nullable: true })
-    category?: Category;
+    data?: Category;
 }

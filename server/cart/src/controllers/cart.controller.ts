@@ -17,14 +17,14 @@ export default {
         const { sid, qty, variant }: ReqBody = req.body;
         let item = await CartItem.findOne({ sid, product_variant: variant._id }).exec();
         if (item) {
-            item.total += qty * variant.price;
+            item.total += Math.round(qty * variant.price * 100) / 100;
             item.quantity += qty;
             await item.save();
         }
         else item = await CartItem.create({
             sid,
             product_variant: variant._id,
-            total: qty * variant.price,
+            total: Math.round(qty * variant.price * 100) / 100,
             quantity: qty
         });
         return res.status(200).json(item);
@@ -39,7 +39,7 @@ export default {
             await item.remove();
             return res.status(200).json(item);
         }
-        item.total -= qty * variant.price;
+        item.total -= Math.round(qty * variant.price * 100) / 100;
         item.quantity -= qty;
         await item.save();
         return res.status(200).json(item);

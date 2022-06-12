@@ -1,31 +1,16 @@
 import { Arg, Query, Resolver } from 'type-graphql';
-import axios from 'axios';
-import Product, { ProductResponse } from '../types/product.type';
-import { urls } from '../constants';
-const URL = urls.catalog + 'product';
+import { Product, ProductResponse } from '../types/product.type';
+import ProductService from '../services/product.service';
 
 @Resolver(Product)
 export default class ProductResolver {
-    @Query(returns => [Product])
+    @Query(() => [Product])
     async getAllProducts() {
-        const response = await axios.get(URL)
-            .catch(error => { throw new Error(error.response.data.message) });
-        return response.data;
+        return ProductService.findAll();
     }
 
-    @Query(returns => ProductResponse)
+    @Query(() => ProductResponse)
     async getProductBySlug(@Arg('slug') slug: string) {
-        try {
-            const response = await axios.get(URL + '/' + slug)
-                .catch(error => { throw new Error(error.response.data.message) });
-            return { product: response.data };
-        } catch (error) {
-            return {
-                error: {
-                    field: 'slug',
-                    message: error.message
-                }
-            }
-        }
+        return ProductService.findBySlug(slug);
     }
 }

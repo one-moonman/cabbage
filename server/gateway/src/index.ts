@@ -7,7 +7,7 @@ import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 
-import { message, port, __prod__ } from './constants';
+import { message, port, __prod__ } from './common/constants';
 import { redis, cors, session } from './config';
 
 async function startApp() {
@@ -18,10 +18,10 @@ async function startApp() {
 
     const server = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [__dirname + "/**/*.resolver.{ts,js}"],
+            resolvers: [__dirname + "/resolvers/*.resolver.{ts,js}"],
         }),
         csrfPrevention: true,
-        context: ({ req, res }) => ({ req, res, redis })
+        context: ({ req }) => ({ session: req.session, redis })
     });
 
     await server.start();

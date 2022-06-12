@@ -1,9 +1,9 @@
 import { ObjectType, Field, ID } from "type-graphql";
-import CartItem from "./cart-item.type";
+import { CartItem } from "./cart-item.type";
 import FieldError from "./field-error.type";
 
 @ObjectType()
-export default class Order {
+export class Order {
     @Field()
     sid: string;
 
@@ -23,6 +23,6 @@ export class OrderResponse {
     error?: FieldError;
 
     @Field(() => Order, { nullable: true })
-    order?: Order;
+    data?: Order;
 }
 

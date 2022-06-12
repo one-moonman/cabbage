@@ -44,7 +44,7 @@ const server = http.createServer(async (req, res) => {
         }
     } catch (error) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.write(JSON.stringify({ status: 404, message: error.message }));
+        res.write(JSON.stringify({ status: 500, message: error.message }));
         res.end();
     }
 })

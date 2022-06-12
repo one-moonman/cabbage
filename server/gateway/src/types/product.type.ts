@@ -2,7 +2,7 @@ import { ObjectType, Field, ID } from "type-graphql";
 import FieldError from "./field-error.type";
 
 @ObjectType()
-export default class Product {
+export class Product {
     @Field(type => ID)
     _id: string;
 
@@ -28,5 +28,5 @@ export class ProductResponse {
     error?: FieldError;
 
     @Field(() => Product, { nullable: true })
-    product?: Product;
+    data?: Product;
 }

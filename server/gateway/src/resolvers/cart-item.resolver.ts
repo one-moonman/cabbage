@@ -1,20 +1,36 @@
-import { Ctx, Query, Resolver } from "type-graphql";
-import axios from "axios";
-import { Context } from "../utils/types";
-import CartItem, { CartItemResponse } from "../types/cart-item.type";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { CartItem, CartItemResponse } from "../types/cart-item.type";
+import CartItemService from "../services/cart-item.service";
+import { Context } from "../common/types";
 
-import { urls } from "../constants";
-const URL = urls + 'cart-items/';
-
-@Resolver(returns => CartItem)
+@Resolver(() => CartItem)
 export default class CartItemResolver {
 
-    @Query(returns => [CartItem])
-    async getItems(@Ctx() { req }: Context) {
-        const response = await axios.get(URL + req.sessionID)
-            .catch(error => { throw new Error(error.response.data.message) });
-        return response.data;
+    @Query(() => [CartItem])
+    async getItems(@Ctx() { session }: Context) {
+        return CartItemService.getItems(session);
     }
 
+    @Mutation(() => CartItem)
+    async removeItem(@Arg('id') id: string) {
+        return CartItemService.removeItem(id);
+    }
 
+    @Mutation(() => CartItemResponse)
+    async increaseItemQuantity(
+        @Arg('id') id: string,
+        @Arg('id') qty: number = 1,
+        @Ctx() { session }: Context
+    ) {
+        return CartItemService.increaseQuantity(id, qty, session);
+    }
+
+    @Mutation(() => CartItemResponse)
+    async decreaseItemQuantity(
+        @Arg('id') id: string,
+        @Arg('id') qty: number = 1,
+        @Ctx() { session }: Context
+    ) {
+        return CartItemService.decreaseQuantity(id, qty, session);
+    }
 }

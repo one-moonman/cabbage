@@ -30,7 +30,7 @@ export default {
     getOneByIdAndUpdateCommitted: async (req: Request, res: Response) => {
         const { id } = req.params;
         const qty: number = req.query.qty as any;
-        const doc = await Variant.findById(id).exec()
+        const doc = await Variant.findById(id).exec();
         if (!doc) throw new NotFound();
         doc.committed += qty;
         await doc.save();
