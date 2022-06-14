@@ -1,3 +1,9 @@
+
+
+<p align="center">
+   <img src="./logo.png" title="Cabbage" alt="Cabbage" width="100%"/>&nbsp;
+</p>
+
 # Cabbage
 Cabbage is e-commerce platform, alternative to OpenCart for example,  that aims to consolidate my knowledge on the used technologies used in its development. The project is not intended for use in serious production.
 
