@@ -1,13 +1,13 @@
-import { Variant } from "../types/variant.type";
-import { urls } from "../common/constants";
-import { createFieldError } from "../common/utils";
+import { Variant } from "./variant.type";
+import { urls } from "../../common/constants";
+import { createFieldError } from "../../common/utils";
 import axios from "axios";
-import CatalogService from "../common/catalog.service";
+import CatalogBaseService from "../catalog.service";
 
-export default class VariantService extends CatalogService {
-    protected static readonly URL: string = urls.catalog + 'variant';
+export default class VariantService extends CatalogBaseService {
+    constructor(URL: string) { super(URL) }
 
-    public static async resolveAvailability(variant: Variant) {
+    public async resolveAvailability(variant: Variant) {
         try {
             let response = await axios.get(urls.cart + 'cart-items/getTaken/' + variant._id)
             const qty = variant.stock - variant.committed - response.data;

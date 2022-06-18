@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
 
 export interface ICartItem {
-    // redis session id
-    sid: string,
-    // product variant id                                  
-    product_variant: mongoose.Types.ObjectId,
-    total: number,
-    quantity: number
+    sid: string,                                // redis session id            
+    product_variant: mongoose.Types.ObjectId,   // product variant id   
+    total: number,                              // total price
+    quantity: number                            // total quantity
 }
 
 export const CartItem = mongoose.model<ICartItem>(

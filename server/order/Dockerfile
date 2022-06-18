@@ -11,4 +11,4 @@ ENV NODE_ENV=${NODE_ENV}
 
 COPY . .
 
-CMD ["node", "src/index.js"]
+CMD ["node", "index.js"]

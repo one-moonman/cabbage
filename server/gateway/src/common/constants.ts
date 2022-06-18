@@ -1,5 +1,5 @@
 export const port = process.env.PORT || 5000
-export const __prod__ = process.env.NODE_ENV === 'production'
+export const __prod__ = process.env.NODE_ENV === 'production';
 export const secret = process.env.SECRET;
 export const message = `[_GATEWAY_] 🕸 service listening at port:${port}`;
 
@@ -8,3 +8,5 @@ export const urls = {
     cart: process.env.CART_URL,
     order: process.env.ORDER_URL
 }
+
+export const redisUrl = process.env.DATABASE_URL;

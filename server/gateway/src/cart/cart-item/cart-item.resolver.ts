@@ -1,19 +1,20 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { CartItem, CartItemResponse } from "../types/cart-item.type";
-import CartItemService from "../services/cart-item.service";
-import { Context } from "../common/types";
+import { CartItem, CartItemResponse } from "./cart-item.type";
+import CartItemService from "./cart-item.service";
+import { Context } from "../../common/types";
 
 @Resolver(() => CartItem)
 export default class CartItemResolver {
+    private readonly cartItemService = new CartItemService();
 
     @Query(() => [CartItem])
     async getItems(@Ctx() { session }: Context) {
-        return CartItemService.getItems(session);
+        return this.cartItemService.getItems(session);
     }
 
     @Mutation(() => CartItem)
     async removeItem(@Arg('id') id: string) {
-        return CartItemService.removeItem(id);
+        return this.cartItemService.removeItem(id);
     }
 
     @Mutation(() => CartItemResponse)
@@ -22,7 +23,7 @@ export default class CartItemResolver {
         @Arg('id') qty: number = 1,
         @Ctx() { session }: Context
     ) {
-        return CartItemService.increaseQuantity(id, qty, session);
+        return this.cartItemService.increaseQuantity(id, qty, session);
     }
 
     @Mutation(() => CartItemResponse)
@@ -31,6 +32,6 @@ export default class CartItemResolver {
         @Arg('id') qty: number = 1,
         @Ctx() { session }: Context
     ) {
-        return CartItemService.decreaseQuantity(id, qty, session);
+        return this.cartItemService.decreaseQuantity(id, qty, session);
     }
 }

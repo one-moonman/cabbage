@@ -1,5 +1,6 @@
 import { ObjectType, Field, ID } from "type-graphql";
-import FieldError from "./field-error.type";
+import FieldError from "../../common/field-error.type";
+import { Response } from "../../common/types";
 
 @ObjectType()
 export class Variant {
@@ -32,7 +33,7 @@ export class Variant {
 }
 
 @ObjectType()
-export class VariantResponse {
+export class VariantResponse implements Response {
     @Field(() => FieldError, { nullable: true })
     error?: FieldError;
 

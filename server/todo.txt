@@ -1,4 +1,0 @@
-change cart mongoose to mongodb driver
-make new route in cart for availability calculation
-add datasources in gateway
-change gateway config tredis to url

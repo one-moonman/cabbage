@@ -18,7 +18,7 @@ async function startApp() {
 
     const server = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [__dirname + "/resolvers/*.resolver.{ts,js}"],
+            resolvers: [__dirname + "/**/**/*.resolver.{ts,js}"],
         }),
         csrfPrevention: true,
         context: ({ req }) => ({ session: req.session, redis })

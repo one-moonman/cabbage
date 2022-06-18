@@ -21,8 +21,9 @@ client.connect()
 const server = http.createServer(async (req, res) => {
     try {
         res.setHeader("Access-Control-Allow-Origin", "*");
-        const reqUrl = url.parse(req.url).pathname;
-        if (req.method === "POST" && reqUrl === "/api/v1/order") {
+        const reqUrl = url.parse(req.url, true);
+        const pathname = reqUrl.pathname;
+        if (req.method === "POST" && pathname === "/api/v1/order") {
             const buffers = [];
             for await (const chunk of req) {
                 buffers.push(chunk);
@@ -37,6 +38,8 @@ const server = http.createServer(async (req, res) => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.write(JSON.stringify(data));
             res.end();
+        } else if (req.method === "POST" && pathname === "/api/v1/order/committed") {
+
         } else {
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.write(JSON.stringify({ status: 404, message: `Cannot make request to ${reqUrl}` }));
