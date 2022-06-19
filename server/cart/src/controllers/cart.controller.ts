@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { NotFound, Gone } from 'http-errors';
-import { CartItem } from '../model';
+import { CartItem } from '../models/cart-item.model';
 
 interface ReqBody {
     qty: number;

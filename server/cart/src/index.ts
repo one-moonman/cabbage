@@ -6,6 +6,8 @@ import { HttpError } from 'http-errors';
 
 import cartRoutes from './routes/cart.routes';
 import cartItemRoutes from './routes/cart-items.routes';
+import orderRoutes from './routes/order.routes';
+import stockRoutes from './routes/stock.routes';
 
 import mongoose from 'mongoose';
 
@@ -21,6 +23,8 @@ async function application() {
         .use(morgan(loggerFormat))
         .use('/api/v1/cart', cartRoutes)
         .use('/api/v1/cart-items', cartItemRoutes)
+        .use('/api/v1/order', orderRoutes)
+        .use('/api/v1/stock', stockRoutes)
         .use((error: HttpError, _, res: express.Response, __) => {
             const status = error.statusCode || error.status || 500;
             const message = error.message || "Something went wrong";

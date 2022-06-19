@@ -21,7 +21,9 @@ async function startApp() {
             resolvers: [__dirname + "/**/**/*.resolver.{ts,js}"],
         }),
         csrfPrevention: true,
-        context: ({ req }) => ({ session: req.session, redis })
+        context: ({ req }) => ({
+            session: req.session, redis
+        })
     });
 
     await server.start();

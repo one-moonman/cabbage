@@ -66,29 +66,13 @@ services:
     depends_on:
       - mongo-db
 
-  order:
-    container_name: order-api
-    environment:
-      PORT: 3002
-      DATABASE_URL: mongodb://mongo:27017/catalog
-    build:
-      context: ./order
-      dockerfile: Dockerfile
-    ports:
-      - 3002:3002
-    networks:
-      - sharedNet
-    restart: unless-stopped
-    depends_on:
-      - mongo-db
-
   gateway:
     container_name: gateway-gql
     environment:
       PORT: 4000
       CATALOG_URL: http://catalog-api:3000/api/v1/catalog/
       CART_URL: http://cart-api:3001/api/v1/
-      ORDER_URL: http://order-api:3002/api/v1/order
+      ORDER_URL: http://order-api:3002/api/v2/order
       SECRET: sometihngsecret
     build:
       context: ./gateway
@@ -99,7 +83,6 @@ services:
       - sharedNet
     restart: unless-stopped
     depends_on:
-      - order
       - catalog
       - cart
       - redis-db

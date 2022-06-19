@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { NotFound } from 'http-errors';
-import { CartItem } from '../model';
+import { CartItem } from '../models/cart-item.model';
 
 export default {
     // GET -> /?sid=

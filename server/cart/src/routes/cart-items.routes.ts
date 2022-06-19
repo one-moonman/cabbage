@@ -5,11 +5,11 @@ const router = Router();
 
 router
     .route('/:id')
-    .put(CartItemController.increaseQuantity)   //?qty
-    .patch(CartItemController.decreaseQuantity) //?qty
+    .put(CartItemController.increaseQuantity)                               //?qty
+    .patch(CartItemController.decreaseQuantity)                             //?qty
     .delete(CartItemController.remove)
 
-router.get('/', CartItemController.getItems)                               //?sid=
+router.get('/', CartItemController.getItems)                                //?sid=
 router.get('/getTaken/:id', CartItemController.calculateTaken)
 
 export default router;
