@@ -14,26 +14,5 @@ export default {
         const doc = await Variant.findOne({ slug }).exec();
         if (!doc) throw new NotFound();
         return res.status(200).json(doc);
-    },
-    // PUT -> /:slug
-    getOneBySlugAndUpdate: async (req: Request, res: Response) => {
-        const { slug } = req.params;
-        const availability: number = req.query.qty as any;
-        const doc = await Variant.findOne({ slug }).exec()
-        if (!doc) throw new NotFound();
-        doc.availability = availability;
-        await doc.save();
-        return res.status(200).json(doc);
-    },
-
-    // Patch -> /:id ?qty=
-    getOneByIdAndUpdateCommitted: async (req: Request, res: Response) => {
-        const { id } = req.params;
-        const qty: number = req.query.qty as any;
-        const doc = await Variant.findById(id).exec();
-        if (!doc) throw new NotFound();
-        doc.committed += qty;
-        await doc.save();
-        return res.status(200).json(doc);
     }
 }

@@ -13,7 +13,7 @@ export default abstract class CatalogBaseService {
 
     public async findBySlug(slug: string) {
         try {
-            const { data } = await axios.get(URL + '/' + slug)
+            const { data } = await axios.get(this.URL + '/' + slug)
             return { data };
         } catch (error) {
             return createFieldError('slug', error.message)

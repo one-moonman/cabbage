@@ -12,10 +12,15 @@ export default class VariantResolver {
         return this.variantService.findAll();
     }
 
-    @FieldResolver()
-    async availability(@Root() variant: Variant) {
-        return this.variantService.resolveAvailability(variant);
-    }
+    // @FieldResolver()
+    // async committed(@Root() variant: Variant) {
+    //     return this.variantService.resolveCommitted(variant);
+    // }
+
+    // @FieldResolver()
+    // async availability(@Root() variant: Variant) {
+    //     return this.variantService.resolveAvailability(variant);
+    // }
 
     @Query(() => VariantResponse)
     async getVariantBySlug(@Arg('slug') slug: string) {

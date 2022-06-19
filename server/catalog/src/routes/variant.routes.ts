@@ -6,7 +6,5 @@ const router = Router();
 router
     .get('/', VariantController.getAll)
     .get('/:slug', VariantController.getOneBySlug)
-    .put('/:slug', VariantController.getOneBySlugAndUpdate)
-    .patch('/:id', VariantController.getOneByIdAndUpdateCommitted)
 
 export default router;

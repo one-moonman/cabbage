@@ -14,16 +14,11 @@ export default class OrderService {
             const items = response.data;
 
             // create order
-            const { data } = await axios.post(urls.order, {
+            const { data } = await axios.post(urls.cart + 'order', {
                 sid: session.id,
                 total: session.total,
                 items
             })
-
-            // update commited
-            for await (const item of items) {
-                axios.patch(urls.catalog + 'variant/' + item.product_variant + '?qty=' + item.quantity);
-            }
 
             // delete cart-items
             await axios.delete(urls.cart + 'cart/' + session.id)

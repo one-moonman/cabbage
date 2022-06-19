@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from "type-graphql";
+import { ObjectType, Field, ID, Int } from "type-graphql";
 import FieldError from "../../common/field-error.type";
 import { Response } from "../../common/types";
 
@@ -22,7 +22,7 @@ export class Variant {
     @Field()
     stock: number;
 
-    @Field({ defaultValue: 0 })
+    @Field()
     committed: number;
 
     @Field()
