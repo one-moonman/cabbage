@@ -40,14 +40,5 @@ export default {
     remove: async (req: Request, res: Response) => {
         const item = await CartItem.findByIdAndRemove(req.params.id).exec();
         return res.status(200).json(item);
-    },
-
-    //TODO: change to separate router
-    // GET -> /taken/:id
-    calculateTaken: async (req: Request, res: Response) => {
-        let taken = 0;
-        const all = await CartItem.find({ product_variant: req.params.id }).exec();
-        all.forEach(item => taken += item.quantity)
-        return res.status(200).json(taken);
     }
 }

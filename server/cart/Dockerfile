@@ -8,7 +8,7 @@ RUN npm install --only=development
 
 COPY . .
 
-RUN npm run build
+RUN npm run esbuild
 
 FROM node:18-alpine as production
 

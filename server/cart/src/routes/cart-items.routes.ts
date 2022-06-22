@@ -10,6 +10,5 @@ router
     .delete(CartItemController.remove)
 
 router.get('/', CartItemController.getItems)                                //?sid=
-router.get('/getTaken/:id', CartItemController.calculateTaken)
 
 export default router;
